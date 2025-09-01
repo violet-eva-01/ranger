@@ -1,5 +1,4 @@
-// Package client @author: Violet-Eva @date  : 2025/8/31 @notes :
-package client
+package session
 
 type Resource struct {
 	Database    *DatabaseResource    `json:"database,omitnil"` // hive service 相关

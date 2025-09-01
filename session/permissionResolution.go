@@ -1,12 +1,11 @@
-// Package client @author: Violet-Eva @date  : 2025/8/31 @notes :
-package client
+package session
 
 import (
 	"errors"
+	"github.com/violet-eva-01/ranger"
+	"github.com/violet-eva-01/ranger/session/functions"
 	"strings"
 	"time"
-
-	"github.com/violet-eva-01/ranger/client/functions"
 )
 
 type PermissionResolution struct {
@@ -62,7 +61,7 @@ func getObjectType(policy PolicyBody) ObjectType {
 			return Database
 		}
 	default:
-		objectType := ObjectType(functions.FindIndex(strings.ToUpper(policy.ServiceType), objectTypeName))
+		objectType := ObjectType(functions.FindIndex(strings.ToUpper(policy.ServiceType), ranger.objectTypeName))
 		return objectType
 	}
 }
@@ -380,7 +379,7 @@ func getPermissions(as []*Accesses) (output []string) {
 	return
 }
 
-func (c *Client) AccessParse(spb map[string][]*PolicyBody, st ServiceType, filters ...func([]PermissionResolution) []PermissionResolution) ([]PermissionResolution, error) {
+func (s *Session) AccessParse(spb map[string][]*PolicyBody, st ServiceType, filters ...func([]PermissionResolution) []PermissionResolution) ([]PermissionResolution, error) {
 
 	var (
 		prs []PermissionResolution
@@ -388,7 +387,7 @@ func (c *Client) AccessParse(spb map[string][]*PolicyBody, st ServiceType, filte
 	)
 
 	if spb[st.String()] == nil {
-		spb, err = c.GetPolicyByServiceName(st.String())
+		spb, err = s.GetPolicyByServiceName(st.String())
 		if err != nil {
 			return nil, err
 		}
@@ -409,7 +408,7 @@ func (c *Client) AccessParse(spb map[string][]*PolicyBody, st ServiceType, filte
 	return prs, nil
 }
 
-func (c *Client) AccessParseByPolicyBody(policyBodies []PolicyBody, filters ...func([]PermissionResolution) []PermissionResolution) ([]PermissionResolution, error) {
+func (s *Session) AccessParseByPolicyBody(policyBodies []PolicyBody, filters ...func([]PermissionResolution) []PermissionResolution) ([]PermissionResolution, error) {
 
 	var (
 		prs []PermissionResolution

@@ -1,5 +1,4 @@
-// Package client @author: Violet-Eva @date  : 2025/8/31 @notes :
-package client
+package session
 
 // PolicyBody
 // @Description: ranger policy 和 hdfs hive yarn cos service 相关的 body
