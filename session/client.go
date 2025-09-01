@@ -11,7 +11,12 @@ type Client struct {
 }
 
 func NewClient() *Client {
-	return &Client{}
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	return &Client{
+		headers: headers,
+	}
 }
 
 func (c *Client) SetHost(host string) *Client {
@@ -45,6 +50,11 @@ func (c *Client) SetPassWord(passWord string) *Client {
 }
 
 func (c *Client) SetHeaders(headers map[string]string) *Client {
+	c.headers = headers
+	return c
+}
+
+func (c *Client) AddHeaders(headers map[string]string) *Client {
 	for k, v := range headers {
 		c.headers[k] = v
 	}

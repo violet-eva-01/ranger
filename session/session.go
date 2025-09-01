@@ -5,7 +5,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"github.com/violet-eva-01/ranger/session/functions"
+	"github.com/violet-eva-01/ranger/session/funcs"
 	"io"
 	"net/http"
 	"net/url"

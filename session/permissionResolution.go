@@ -2,8 +2,7 @@ package session
 
 import (
 	"errors"
-	"github.com/violet-eva-01/ranger"
-	"github.com/violet-eva-01/ranger/session/functions"
+	"github.com/violet-eva-01/ranger/session/funcs"
 	"strings"
 	"time"
 )
@@ -61,7 +60,7 @@ func getObjectType(policy PolicyBody) ObjectType {
 			return Database
 		}
 	default:
-		objectType := ObjectType(functions.FindIndex(strings.ToUpper(policy.ServiceType), ranger.objectTypeName))
+		objectType := ObjectType(functions.FindIndex(strings.ToUpper(policy.ServiceType), objectTypeName))
 		return objectType
 	}
 }
