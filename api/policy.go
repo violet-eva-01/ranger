@@ -47,18 +47,18 @@ func (p *PolicyBody) Parse() ([]PermissionResolution, error) {
 
 	if len(*p.RowFilterPolicyItems) > 0 {
 		for _, rf := range *p.RowFilterPolicyItems {
-			permissions := getPermissions(*rf.Accesses)
+			permissions := getPermissions(rf.Accesses)
 			restriction := rf.RowFilterInfo.FilterExpr
-			authorizeSlice := p.authorizeSliceAssignment(objects, *rf.Users, *rf.Roles, *rf.Groups, permissions, "", vss, isTimeout, restriction)
+			authorizeSlice := p.authorizeSliceAssignment(objects, rf.Users, rf.Roles, rf.Groups, permissions, "", vss, isTimeout, restriction)
 			authorizes = append(authorizes, authorizeSlice...)
 		}
 	}
 
 	if len(*p.DataMaskPolicyItems) > 0 {
 		for _, dmp := range *p.DataMaskPolicyItems {
-			permissions := getPermissions(*dmp.Accesses)
+			permissions := getPermissions(dmp.Accesses)
 			restriction := dmp.DataMaskInfo.DataMaskType
-			authorizeSlice := p.authorizeSliceAssignment(objects, *dmp.Users, *dmp.Roles, *dmp.Groups, permissions, "", vss, isTimeout, restriction)
+			authorizeSlice := p.authorizeSliceAssignment(objects, dmp.Users, dmp.Roles, dmp.Groups, permissions, "", vss, isTimeout, restriction)
 			authorizes = append(authorizes, authorizeSlice...)
 		}
 	}
@@ -66,8 +66,8 @@ func (p *PolicyBody) Parse() ([]PermissionResolution, error) {
 	if len(*p.PolicyItems) > 0 {
 		permissionType := "PolicyItem"
 		for _, pi := range *p.PolicyItems {
-			permissions := getPermissions(*pi.Accesses)
-			authorizeSlice := p.authorizeSliceAssignment(objects, *pi.Users, *pi.Roles, *pi.Groups, permissions, permissionType, vss, isTimeout)
+			permissions := getPermissions(pi.Accesses)
+			authorizeSlice := p.authorizeSliceAssignment(objects, pi.Users, pi.Roles, pi.Groups, permissions, permissionType, vss, isTimeout)
 			authorizes = append(authorizes, authorizeSlice...)
 		}
 	}
@@ -75,8 +75,8 @@ func (p *PolicyBody) Parse() ([]PermissionResolution, error) {
 	if len(*p.DenyPolicyItems) > 0 {
 		permissionType := "DenyPolicyItem"
 		for _, dpi := range *p.DenyPolicyItems {
-			permissions := getPermissions(*dpi.Accesses)
-			authorizeSlice := p.authorizeSliceAssignment(objects, *dpi.Users, *dpi.Roles, *dpi.Groups, permissions, permissionType, vss, isTimeout)
+			permissions := getPermissions(dpi.Accesses)
+			authorizeSlice := p.authorizeSliceAssignment(objects, dpi.Users, dpi.Roles, dpi.Groups, permissions, permissionType, vss, isTimeout)
 			authorizes = append(authorizes, authorizeSlice...)
 		}
 	}
@@ -84,8 +84,8 @@ func (p *PolicyBody) Parse() ([]PermissionResolution, error) {
 	if len(*p.AllowExceptions) > 0 {
 		permissionType := "AllowException"
 		for _, ae := range *p.AllowExceptions {
-			permissions := getPermissions(*ae.Accesses)
-			authorizeSlice := p.authorizeSliceAssignment(objects, *ae.Users, *ae.Roles, *ae.Groups, permissions, permissionType, vss, isTimeout)
+			permissions := getPermissions(ae.Accesses)
+			authorizeSlice := p.authorizeSliceAssignment(objects, ae.Users, ae.Roles, ae.Groups, permissions, permissionType, vss, isTimeout)
 			authorizes = append(authorizes, authorizeSlice...)
 		}
 	}
@@ -93,8 +93,8 @@ func (p *PolicyBody) Parse() ([]PermissionResolution, error) {
 	if len(*p.DenyExceptions) > 0 {
 		permissionType := "DenyException"
 		for _, de := range *p.DenyExceptions {
-			permissions := getPermissions(*de.Accesses)
-			authorizeSlice := p.authorizeSliceAssignment(objects, *de.Users, *de.Roles, *de.Groups, permissions, permissionType, vss, isTimeout)
+			permissions := getPermissions(de.Accesses)
+			authorizeSlice := p.authorizeSliceAssignment(objects, de.Users, de.Roles, de.Groups, permissions, permissionType, vss, isTimeout)
 			authorizes = append(authorizes, authorizeSlice...)
 		}
 	}
@@ -119,59 +119,59 @@ type Conditions struct {
 // PolicyItems
 // @Description: 授权
 type PolicyItems struct {
-	Users         *[]string      `json:"users,omitnil"`
-	Accesses      *[]*Accesses   `json:"accesses,omitnil"`
-	Groups        *[]string      `json:"groups,omitnil"`
-	Roles         *[]string      `json:"roles,omitnil"`
-	Conditions    *[]*Conditions `json:"conditions,omitnil"`
-	DelegateAdmin *bool          `json:"delegateAdmin,omitnil"`
+	Users         []string      `json:"users,omitnil"`
+	Accesses      []*Accesses   `json:"accesses,omitnil"`
+	Groups        []string      `json:"groups,omitnil"`
+	Roles         []string      `json:"roles,omitnil"`
+	Conditions    []*Conditions `json:"conditions,omitnil"`
+	DelegateAdmin bool          `json:"delegateAdmin,omitnil"`
 }
 
 // AllowExceptions
 // @Description: 除外授权
 type AllowExceptions struct {
-	Users         *[]string      `json:"users,omitnil"`
-	Accesses      *[]*Accesses   `json:"accesses,omitnil"`
-	Groups        *[]string      `json:"groups,omitnil"`
-	Roles         *[]string      `json:"roles,omitnil"`
-	Conditions    *[]*Conditions `json:"conditions,omitnil"`
-	DelegateAdmin *bool          `json:"delegateAdmin,omitnil"`
+	Users         []string      `json:"users,omitnil"`
+	Accesses      []*Accesses   `json:"accesses,omitnil"`
+	Groups        []string      `json:"groups,omitnil"`
+	Roles         []string      `json:"roles,omitnil"`
+	Conditions    []*Conditions `json:"conditions,omitnil"`
+	DelegateAdmin bool          `json:"delegateAdmin,omitnil"`
 }
 
 // DenyPolicyItems
 // @Description: 回收权限
 type DenyPolicyItems struct {
-	Users         *[]string      `json:"users,omitnil"`
-	Accesses      *[]*Accesses   `json:"accesses,omitnil"`
-	Groups        *[]string      `json:"groups,omitnil"`
-	Roles         *[]string      `json:"roles,omitnil"`
-	Conditions    *[]*Conditions `json:"conditions,omitnil"`
-	DelegateAdmin *bool          `json:"delegateAdmin,omitnil"`
+	Users         []string      `json:"users,omitnil"`
+	Accesses      []*Accesses   `json:"accesses,omitnil"`
+	Groups        []string      `json:"groups,omitnil"`
+	Roles         []string      `json:"roles,omitnil"`
+	Conditions    []*Conditions `json:"conditions,omitnil"`
+	DelegateAdmin bool          `json:"delegateAdmin,omitnil"`
 }
 
 // DenyExceptions
 // @Description: 除外回收权限
 type DenyExceptions struct {
-	Users         *[]string      `json:"users,omitnil"`
-	Accesses      *[]*Accesses   `json:"accesses,omitnil"`
-	Groups        *[]string      `json:"groups,omitnil"`
-	Roles         *[]string      `json:"roles,omitnil"`
-	Conditions    *[]*Conditions `json:"conditions,omitnil"`
-	DelegateAdmin *bool          `json:"delegateAdmin,omitnil"`
+	Users         []string      `json:"users,omitnil"`
+	Accesses      []*Accesses   `json:"accesses,omitnil"`
+	Groups        []string      `json:"groups,omitnil"`
+	Roles         []string      `json:"roles,omitnil"`
+	Conditions    []*Conditions `json:"conditions,omitnil"`
+	DelegateAdmin bool          `json:"delegateAdmin,omitnil"`
 }
 
 // ValiditySchedules
 // @Description: 有效时间
 type ValiditySchedules struct {
-	StartTime   *string        `json:"startTime,omitnil"`
-	EndTime     *string        `json:"endTime,omitnil"`
-	TimeZone    *string        `json:"timeZone,omitnil"`
-	Recurrences *[]*Recurrence `json:"recurrences,omitnil"`
+	StartTime   string        `json:"startTime,omitnil"`
+	EndTime     string        `json:"endTime,omitnil"`
+	TimeZone    string        `json:"timeZone,omitnil"`
+	Recurrences []*Recurrence `json:"recurrences,omitnil"`
 }
 
 type Recurrence struct {
-	Interval *Interval `json:"interval,omitnil"`
-	Schedule *Schedule `json:"schedule,omitnil"`
+	Interval Interval `json:"interval,omitnil"`
+	Schedule Schedule `json:"schedule,omitnil"`
 }
 
 type Interval struct {
@@ -191,25 +191,25 @@ type DataMaskInfo struct {
 // DataMaskPolicyItems
 // @Description: 加密 & 授予解密权限
 type DataMaskPolicyItems struct {
-	DataMaskInfo  *DataMaskInfo  `json:"dataMaskInfo,omitnil"`
-	Users         *[]string      `json:"users,omitnil"`
-	Accesses      *[]*Accesses   `json:"accesses,omitnil"`
-	Groups        *[]string      `json:"groups,omitnil"`
-	Roles         *[]string      `json:"roles,omitnil"`
-	Conditions    *[]*Conditions `json:"conditions,omitnil"`
-	DelegateAdmin *bool          `json:"delegateAdmin,omitnil"`
+	DataMaskInfo  DataMaskInfo  `json:"dataMaskInfo,omitnil"`
+	Users         []string      `json:"users,omitnil"`
+	Accesses      []*Accesses   `json:"accesses,omitnil"`
+	Groups        []string      `json:"groups,omitnil"`
+	Roles         []string      `json:"roles,omitnil"`
+	Conditions    []*Conditions `json:"conditions,omitnil"`
+	DelegateAdmin bool          `json:"delegateAdmin,omitnil"`
 }
 
 // RowFilterPolicyItems
 // @Description: 行级过滤限制
 type RowFilterPolicyItems struct {
-	RowFilterInfo *RowFilterInfo `json:"rowFilterInfo,omitnil"`
-	Users         *[]string      `json:"users,omitnil"`
-	Accesses      *[]*Accesses   `json:"accesses,omitnil"`
-	Groups        *[]string      `json:"groups,omitnil"`
-	Roles         *[]string      `json:"roles,omitnil"`
-	Conditions    *[]*Conditions `json:"conditions,omitnil"`
-	DelegateAdmin *bool          `json:"delegateAdmin,omitnil"`
+	RowFilterInfo RowFilterInfo `json:"rowFilterInfo,omitnil"`
+	Users         []string      `json:"users,omitnil"`
+	Accesses      []*Accesses   `json:"accesses,omitnil"`
+	Groups        []string      `json:"groups,omitnil"`
+	Roles         []string      `json:"roles,omitnil"`
+	Conditions    []*Conditions `json:"conditions,omitnil"`
+	DelegateAdmin bool          `json:"delegateAdmin,omitnil"`
 }
 
 type RowFilterInfo struct {
