@@ -1,16 +1,17 @@
-package session
+package api
 
 import (
 	"bytes"
 	"encoding/json"
 	"errors"
 	"fmt"
-	"github.com/violet-eva-01/ranger/session/funcs"
 	"io"
 	"net/http"
 	"net/url"
 	"reflect"
 	"strings"
+
+	"github.com/violet-eva-01/ranger/api/funcs"
 )
 
 type Session struct {
@@ -74,7 +75,7 @@ func (s *Session) Request(method string, ApiPath string, body []byte) (respBody 
 // RequestToStruct
 // @Description:
 // @param method 请求方法
-// @param Api ranger api
+// @param Api api api
 // @param body 请求体
 // @param data 需要为[struct | struct slice]指针
 // @return error
@@ -125,7 +126,7 @@ func (s *Session) GetServiceDefsType() ([]ServiceDef, []ServiceTypeId, error) {
 		return nil, nil, err
 	}
 	for _, def := range defs {
-		index := functions.FindIndex(strings.ToLower(def.Name), serviceTypeName)
+		index := funcs.FindIndex(strings.ToLower(def.Name), serviceTypeName)
 		if index >= 0 {
 			var tmpSTI ServiceTypeId
 			tmpSTI.ServiceTypeId = index

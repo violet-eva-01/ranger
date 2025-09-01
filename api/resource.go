@@ -1,4 +1,4 @@
-package session
+package api
 
 type Resource struct {
 	Database    *DatabaseResource    `json:"database,omitnil"` // hive service 相关

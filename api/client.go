@@ -1,4 +1,4 @@
-package session
+package api
 
 type Client struct {
 	host     string
@@ -61,7 +61,7 @@ func (c *Client) AddHeaders(headers map[string]string) *Client {
 	return c
 }
 
-func (c *Client) GetSession() *Session {
+func (c *Client) Build() *Session {
 	return &Session{
 		host:     c.host,
 		port:     c.port,

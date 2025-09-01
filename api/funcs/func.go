@@ -1,4 +1,4 @@
-package functions
+package funcs
 
 func FindIndex(str string, strArr []string) int {
 	for index, element := range strArr {

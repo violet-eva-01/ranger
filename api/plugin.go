@@ -1,8 +1,9 @@
-package session
+package api
 
 import (
-	"github.com/violet-eva-01/ranger/session/funcs"
 	"strings"
+
+	"github.com/violet-eva-01/ranger/api/funcs"
 )
 
 type PluginsDefinitions struct {
@@ -17,7 +18,7 @@ type PluginsDefinitions struct {
 func (p *PluginsDefinitions) GetServiceTypesIds() []ServiceTypeId {
 	var sti []ServiceTypeId
 	for _, sd := range p.ServiceDefs {
-		index := functions.FindIndex(strings.ToLower(sd.Name), serviceTypeName)
+		index := funcs.FindIndex(strings.ToLower(sd.Name), serviceTypeName)
 		if index >= 0 {
 			var tmpSTI ServiceTypeId
 			tmpSTI.ServiceTypeId = index

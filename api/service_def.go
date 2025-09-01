@@ -1,4 +1,4 @@
-package session
+package api
 
 type ServiceDef struct {
 	Id          int    `json:"id"`

@@ -1,8 +1,8 @@
-package session
+package api
 
 import (
 	"errors"
-	"github.com/violet-eva-01/ranger/session/funcs"
+	"github.com/violet-eva-01/ranger/api/funcs"
 	"strings"
 	"time"
 )
@@ -342,27 +342,27 @@ func (a *PermissionResolution) assignment(policy PolicyBody, oj Object, permissi
 	}
 }
 
-func (p *PolicyBody) authorizeSliceAssignment(ojs []Object, users []*string, roles []*string, groups []*string, permissions []string, permissionType string, vss []string, isTimeout bool, restrictions ...*string) (output []PermissionResolution) {
+func (p *PolicyBody) authorizeSliceAssignment(ojs []Object, users []string, roles []string, groups []string, permissions []string, permissionType string, vss []string, isTimeout bool, restrictions ...*string) (output []PermissionResolution) {
 
 	for _, oj := range ojs {
-		if len(users) > 1 || (len(users) == 1 && strings.TrimSpace(*users[0]) != "") {
+		if len(users) > 1 || (len(users) == 1 && strings.TrimSpace(users[0]) != "") {
 			for _, user := range users {
 				var tmpAuth PermissionResolution
-				tmpAuth.assignment(*p, oj, permissions, permissionType, *user, "USER", vss, isTimeout, restrictions...)
+				tmpAuth.assignment(*p, oj, permissions, permissionType, user, "USER", vss, isTimeout, restrictions...)
 				output = append(output, tmpAuth)
 			}
 		}
-		if len(groups) > 1 || (len(groups) == 1 && strings.TrimSpace(*groups[0]) != "") {
+		if len(groups) > 1 || (len(groups) == 1 && strings.TrimSpace(groups[0]) != "") {
 			for _, group := range groups {
 				var tmpAuth PermissionResolution
-				tmpAuth.assignment(*p, oj, permissions, permissionType, *group, "GROUP", vss, isTimeout, restrictions...)
+				tmpAuth.assignment(*p, oj, permissions, permissionType, group, "GROUP", vss, isTimeout, restrictions...)
 				output = append(output, tmpAuth)
 			}
 		}
-		if len(roles) > 1 || (len(roles) == 1 && strings.TrimSpace(*roles[0]) != "") {
+		if len(roles) > 1 || (len(roles) == 1 && strings.TrimSpace(roles[0]) != "") {
 			for _, role := range roles {
 				var tmpAuth PermissionResolution
-				tmpAuth.assignment(*p, oj, permissions, permissionType, *role, "ROLE", vss, isTimeout, restrictions...)
+				tmpAuth.assignment(*p, oj, permissions, permissionType, role, "ROLE", vss, isTimeout, restrictions...)
 				output = append(output, tmpAuth)
 			}
 		}
