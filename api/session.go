@@ -173,8 +173,13 @@ func (s *Session) GetPolicyByName(policyName string) (*PolicyBody, error) {
 }
 
 func (s *Session) UpdatePolicy(policy *PolicyBody) (p PolicyBody, err error) {
+	var reqBody []byte
+	reqBody, err = json.Marshal(policy)
+	if err != nil {
+		return
+	}
 	pb := &PolicyBody{}
-	if err = s.RequestToStruct("PUT", fmt.Sprintf("/public/v2/api/policy/%d", policy.Id), nil, pb); err != nil {
+	if err = s.RequestToStruct("PUT", fmt.Sprintf("/public/v2/api/policy/%d", policy.Id), reqBody, pb); err != nil {
 		return
 	}
 	p = *pb

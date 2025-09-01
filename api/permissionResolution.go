@@ -17,7 +17,7 @@ type PermissionResolution struct {
 	ObjectName        string    `json:"object_name" spark:"column:object_name"`
 	ObjectDBName      string    `json:"object_db_name" spark:"column:object_db_name"`
 	ObjectTBLName     string    `json:"object_tbl_name" spark:"column:object_tbl_name"`
-	ObjectColumnName  []*string `json:"object_column" spark:"column:object_column_name"`
+	ObjectColumnName  []string `json:"object_column" spark:"column:object_column_name"`
 	ObjectRestriction []*string `json:"object_restriction" spark:"column:object_restriction"`
 	GranteeType       string    `json:"grantee_type" spark:"column:grantee_type"`
 	Grantee           string    `json:"grantee" spark:"column:grantee"`
@@ -28,11 +28,11 @@ type PermissionResolution struct {
 }
 
 type Object struct {
-	ObjectType       string    `json:"object_type"`
-	ObjectName       string    `json:"object_name"`
-	ObjectDBName     string    `json:"object_db_name"`
-	ObjectTBLName    string    `json:"object_tbl_name"`
-	ObjectColumnName []*string `json:"object_column_name"`
+	ObjectType       string   `json:"object_type"`
+	ObjectName       string   `json:"object_name"`
+	ObjectDBName     string   `json:"object_db_name"`
+	ObjectTBLName    string   `json:"object_tbl_name"`
+	ObjectColumnName []string `json:"object_column_name"`
 }
 
 func getObjectType(policy PolicyBody) ObjectType {
@@ -43,19 +43,19 @@ func getObjectType(policy PolicyBody) ObjectType {
 			return Masking
 		} else if len(*policy.RowFilterPolicyItems) > 0 {
 			return RowFilter
-		} else if len(*policy.Resources.HiveService.Values) > 0 {
+		} else if len(policy.Resources.HiveService.Values) > 0 {
 			return HiveService
-		} else if len(*policy.Resources.Url.Values) > 0 {
+		} else if len(policy.Resources.Url.Values) > 0 {
 			return Url
-		} else if len(*policy.Resources.Udf.Values) > 0 {
-			if len(*policy.Resources.Database.Values) > 1 {
+		} else if len(policy.Resources.Udf.Values) > 0 {
+			if len(policy.Resources.Database.Values) > 1 {
 				return Udf
 			} else {
 				return GlobalUdf
 			}
-		} else if len(*policy.Resources.Column.Values) > 0 {
+		} else if len(policy.Resources.Column.Values) > 0 {
 			return Column
-		} else if len(*policy.Resources.Table.Values) > 0 {
+		} else if len(policy.Resources.Table.Values) > 0 {
 			return Table
 		} else {
 			return Database
@@ -72,159 +72,120 @@ func getObject(policy PolicyBody) (output []Object) {
 
 	switch objectType {
 	case HiveService:
-		for _, hiveService := range *policy.Resources.HiveService.Values {
-			var tmpHiveService string
-			if *hiveService == "*" {
-				tmpHiveService = "ALL HIVE SERVICE"
-			} else {
-				tmpHiveService = *hiveService
+		for _, hiveService := range policy.Resources.HiveService.Values {
+			if hiveService == "*" {
+				hiveService = "ALL HIVE SERVICE"
 			}
 			var tmpObject Object
-			tmpObject.ObjectName = tmpHiveService
+			tmpObject.ObjectName = hiveService
 			tmpObject.ObjectType = HiveService.String()
 			output = append(output, tmpObject)
 		}
 	case GlobalUdf:
-		for _, gu := range *policy.Resources.Global.Values {
-			var tmpGU string
-			if *gu == "*" {
-				tmpGU = "ALL GLOBAL UDF"
-			} else {
-				tmpGU = *gu
+		for _, gu := range policy.Resources.Global.Values {
+			if gu == "*" {
+				gu = "ALL GLOBAL UDF"
 			}
 			var tmpObject Object
-			tmpObject.ObjectName = tmpGU
+			tmpObject.ObjectName = gu
 			tmpObject.ObjectType = GlobalUdf.String()
 			output = append(output, tmpObject)
 		}
 	case Url:
-		for _, url := range *policy.Resources.Url.Values {
-			var tmpURL string
-			if *url == "*" {
-				tmpURL = "ALL URL"
-			} else {
-				tmpURL = *url
+		for _, url := range policy.Resources.Url.Values {
+			if url == "*" {
+				url = "ALL URL"
 			}
 			var tmpObject Object
-			tmpObject.ObjectName = tmpURL
+			tmpObject.ObjectName = url
 			tmpObject.ObjectType = Url.String()
 			output = append(output, tmpObject)
 		}
 	case Database:
-		for _, db := range *policy.Resources.Database.Values {
-			var tmpDB string
-			if *db == "*" {
-				tmpDB = "ALL DATABASE"
-			} else {
-				tmpDB = *db
+		for _, db := range policy.Resources.Database.Values {
+			if db == "*" {
+				db = "ALL DATABASE"
 			}
 			var tmpObject Object
-			tmpObject.ObjectDBName = tmpDB
+			tmpObject.ObjectDBName = db
 			tmpObject.ObjectType = Database.String()
 			output = append(output, tmpObject)
 		}
 	case Hdfs:
-		for _, path := range *policy.Resources.Path.Values {
-			var tmpPath string
-			if *path == "*" {
-				tmpPath = "ALL PATH"
-			} else {
-				tmpPath = *path
+		for _, path := range policy.Resources.Path.Values {
+			if path == "*" {
+				path = "ALL PATH"
 			}
 			var tmpObject Object
-			tmpObject.ObjectName = tmpPath
+			tmpObject.ObjectName = path
 			tmpObject.ObjectType = Hdfs.String()
 			output = append(output, tmpObject)
 		}
 	case Yarn:
-		for _, query := range *policy.Resources.Queue.Values {
-			var tmpQuery string
-			if *query == "*" {
-				tmpQuery = "ALL QUEUE"
-			} else {
-				tmpQuery = *query
+		for _, query := range policy.Resources.Queue.Values {
+			if query == "*" {
+				query = "ALL QUEUE"
 			}
 			var tmpObject Object
-			tmpObject.ObjectName = tmpQuery
+			tmpObject.ObjectName = query
 			tmpObject.ObjectType = Yarn.String()
 		}
 	// 为*规则不生效，不做特殊处理
 	case Masking, RowFilter:
 		var tmpObject Object
-		dbValues := *policy.Resources.Database.Values
-		tmpObject.ObjectDBName = *dbValues[0]
-		tblValues := *policy.Resources.Table.Values
-		tmpObject.ObjectTBLName = *tblValues[0]
+		tmpObject.ObjectDBName = policy.Resources.Database.Values[0]
+		tmpObject.ObjectTBLName = policy.Resources.Table.Values[0]
 		tmpObject.ObjectType = RowFilter.String()
 		if objectType == Masking {
-			colValues := *policy.Resources.Column.Values
-			tmpObject.ObjectColumnName = colValues
+			tmpObject.ObjectColumnName = policy.Resources.Column.Values
 			tmpObject.ObjectType = Masking.String()
 		}
 		output = append(output, tmpObject)
 	case Chdfs:
-		for _, mountPoint := range *policy.Resources.MountPoint.Values {
-			var tmpMountPoint string
-			if *mountPoint == "*" {
-				tmpMountPoint = "ALL MOUNT POINT"
-			} else {
-				tmpMountPoint = *mountPoint
+		for _, mountPoint := range policy.Resources.MountPoint.Values {
+			if mountPoint == "*" {
+				mountPoint = "ALL MOUNT POINT"
 			}
-			for _, path := range *policy.Resources.Path.Values {
-				var tmpPath string
-				if *path == "*" {
-					tmpPath = "ALL PATH"
-				} else {
-					tmpPath = *path
+			for _, path := range policy.Resources.Path.Values {
+				if path == "*" {
+					path = "ALL PATH"
 				}
 				var tmpObject Object
-				tmpObject.ObjectName = tmpMountPoint + " AND " + tmpPath
+				tmpObject.ObjectName = mountPoint + " AND " + path
 				tmpObject.ObjectType = Chdfs.String()
 				output = append(output, tmpObject)
 			}
 		}
 	case Cos:
-		for _, bucket := range *policy.Resources.Bucket.Values {
-			var tmpBucket string
-			if *bucket == "*" {
-				tmpBucket = "ALL BUCKET"
-			} else {
-				tmpBucket = *bucket
+		for _, bucket := range policy.Resources.Bucket.Values {
+			if bucket == "*" {
+				bucket = "ALL BUCKET"
 			}
-			for _, path := range *policy.Resources.Path.Values {
-				var tmpPath string
-				if *path == "*" {
-					tmpPath = "ALL PATH"
-				} else {
-					tmpPath = *path
+			for _, path := range policy.Resources.Path.Values {
+				if path == "*" {
+					path = "ALL PATH"
 				}
 				var tmpObject Object
-				tmpObject.ObjectName = tmpBucket + " AND " + tmpPath
+				tmpObject.ObjectName = bucket + " AND " + path
 				tmpObject.ObjectType = Cos.String()
 				output = append(output, tmpObject)
 			}
 		}
 	case Table, Column:
-		for _, database := range *policy.Resources.Database.Values {
-			var tmpDatabase string
-			if *database == "*" {
-				tmpDatabase = "ALL DATABASE"
-			} else {
-				tmpDatabase = *database
+		for _, database := range policy.Resources.Database.Values {
+			if database == "*" {
+				database = "ALL DATABASE"
 			}
-			for _, table := range *policy.Resources.Table.Values {
-				var tmpTable string
-				if *table == "*" {
-					tmpTable = "ALL TABLE"
-				} else {
-					tmpTable = *table
+			for _, table := range policy.Resources.Table.Values {
+				if table == "*" {
+					table = "ALL TABLE"
 				}
 				var tmpObject Object
-				tmpObject.ObjectDBName = tmpDatabase
-				tmpObject.ObjectTBLName = tmpTable
+				tmpObject.ObjectDBName = database
+				tmpObject.ObjectTBLName = table
 				tmpObject.ObjectType = Table.String()
 				if objectType == Column {
-					tmpObject.ObjectColumnName = *policy.Resources.Column.Values
+					tmpObject.ObjectColumnName = policy.Resources.Column.Values
 					tmpObject.ObjectType = Column.String()
 				}
 
