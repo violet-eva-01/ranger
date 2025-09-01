@@ -2,9 +2,10 @@ package api
 
 import (
 	"errors"
-	"github.com/violet-eva-01/ranger/api/funcs"
 	"strings"
 	"time"
+
+	"github.com/violet-eva-01/ranger/api/funcs"
 )
 
 type PermissionResolution struct {
@@ -60,7 +61,7 @@ func getObjectType(policy PolicyBody) ObjectType {
 			return Database
 		}
 	default:
-		objectType := ObjectType(functions.FindIndex(strings.ToUpper(policy.ServiceType), objectTypeName))
+		objectType := ObjectType(funcs.FindIndex(strings.ToUpper(policy.ServiceType), objectTypeName))
 		return objectType
 	}
 }
@@ -286,9 +287,9 @@ func validitySchedulesParse(input string) (output string) {
 func getValiditySchedules(vss []*ValiditySchedules) (output []string) {
 
 	for _, vs := range vss {
-		startTime := validitySchedulesParse(*vs.StartTime)
-		endTime := validitySchedulesParse(*vs.EndTime)
-		tmpStr := startTime + "~" + endTime + "~" + *vs.TimeZone
+		startTime := validitySchedulesParse(vs.StartTime)
+		endTime := validitySchedulesParse(vs.EndTime)
+		tmpStr := startTime + "~" + endTime + "~" + vs.TimeZone
 		output = append(output, tmpStr)
 	}
 
