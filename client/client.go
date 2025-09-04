@@ -163,7 +163,7 @@ func (c *Client) GetPolicyByServiceType(serviceType string) ([]policy.Policy, er
 	for {
 		var tmpPb []policy.Policy
 		if err := c.RequestToStruct("GET",
-			fmt.Sprintf("/public/v2/client/policy?startIndex=%d&pageSize=%d&serviceType=%s",
+			fmt.Sprintf("/public/v2/api/policy?startIndex=%d&pageSize=%d&serviceType=%s",
 				startIndex, pageSize, serviceType), nil, &tmpPb); err != nil {
 			return nil, err
 		}
@@ -178,7 +178,7 @@ func (c *Client) GetPolicyByServiceType(serviceType string) ([]policy.Policy, er
 
 func (c *Client) GetPolicyById(policyId int) (output policy.Policy, err error) {
 	if err = c.RequestToStruct("GET",
-		fmt.Sprintf("/public/v2/client/policy/%d",
+		fmt.Sprintf("/public/v2/api/policy/%d",
 			policyId), nil, &output); err != nil {
 		return
 	}
@@ -187,7 +187,7 @@ func (c *Client) GetPolicyById(policyId int) (output policy.Policy, err error) {
 
 func (c *Client) GetPolicyByName(policyName string) (pb []policy.Policy, err error) {
 	if err = c.RequestToStruct("GET",
-		fmt.Sprintf("/public/v2/client/policy?policyName=%s",
+		fmt.Sprintf("/public/v2/api/policy?policyName=%s",
 			policyName), nil, &pb); err != nil {
 		return
 	}
@@ -200,7 +200,7 @@ func (c *Client) UpdatePolicy(input policy.Policy) (output policy.Policy, err er
 	if err != nil {
 		return
 	}
-	if err = c.RequestToStruct("PUT", fmt.Sprintf("/public/v2/client/policy/%d", input.Id), reqBody, &output); err != nil {
+	if err = c.RequestToStruct("PUT", fmt.Sprintf("/public/v2/api/policy/%d", input.Id), reqBody, &output); err != nil {
 		return
 	}
 	return
