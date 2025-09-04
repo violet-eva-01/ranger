@@ -106,7 +106,15 @@ func (c *Client) Request(method string, api string, body []byte) (respBody []byt
 
 	defer resp.Body.Close()
 
-	if resp.StatusCode != 200 {
+	httpSuccess := map[int]bool{
+		http.StatusOK:             true,
+		http.StatusCreated:        true,
+		http.StatusAccepted:       true,
+		http.StatusNoContent:      true,
+		http.StatusResetContent:   true,
+		http.StatusPartialContent: true,
+	}
+	if !httpSuccess[resp.StatusCode] {
 		err = errors.New(resp.Status)
 		return
 	}
