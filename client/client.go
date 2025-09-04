@@ -142,7 +142,7 @@ func (c *Client) GetServiceDefs() ([]types.ServiceDef, error) {
 	for {
 		var pd types.PluginsDefinitions
 		if err := c.RequestToStruct("GET", fmt.Sprintf("/plugins/definitions?startIndex=%d&pageSize=%d", startIndex, pageSize),
-			nil, pd); err != nil {
+			nil, &pd); err != nil {
 			return nil, err
 		}
 		sd = append(sd, pd.ServiceDefs...)
@@ -164,7 +164,7 @@ func (c *Client) GetPolicyByServiceType(serviceType string) ([]policy.Policy, er
 		var tmpPb []policy.Policy
 		if err := c.RequestToStruct("GET",
 			fmt.Sprintf("/public/v2/client/policy?startIndex=%d&pageSize=%d&serviceType=%s",
-				startIndex, pageSize, serviceType), nil, tmpPb); err != nil {
+				startIndex, pageSize, serviceType), nil, &tmpPb); err != nil {
 			return nil, err
 		}
 		pb = append(pb, tmpPb...)
@@ -179,7 +179,7 @@ func (c *Client) GetPolicyByServiceType(serviceType string) ([]policy.Policy, er
 func (c *Client) GetPolicyById(policyId int) (output policy.Policy, err error) {
 	if err = c.RequestToStruct("GET",
 		fmt.Sprintf("/public/v2/client/policy/%d",
-			policyId), nil, output); err != nil {
+			policyId), nil, &output); err != nil {
 		return
 	}
 	return
@@ -188,7 +188,7 @@ func (c *Client) GetPolicyById(policyId int) (output policy.Policy, err error) {
 func (c *Client) GetPolicyByName(policyName string) (pb []policy.Policy, err error) {
 	if err = c.RequestToStruct("GET",
 		fmt.Sprintf("/public/v2/client/policy?policyName=%s",
-			policyName), nil, pb); err != nil {
+			policyName), nil, &pb); err != nil {
 		return
 	}
 	return
@@ -200,7 +200,7 @@ func (c *Client) UpdatePolicy(input policy.Policy) (output policy.Policy, err er
 	if err != nil {
 		return
 	}
-	if err = c.RequestToStruct("PUT", fmt.Sprintf("/public/v2/client/policy/%d", input.Id), reqBody, output); err != nil {
+	if err = c.RequestToStruct("PUT", fmt.Sprintf("/public/v2/client/policy/%d", input.Id), reqBody, &output); err != nil {
 		return
 	}
 	return
@@ -214,7 +214,7 @@ func (c *Client) GetUsers() (users []types.VXUser, err error) {
 	for {
 		var xUsers types.XUsers
 		if err = c.RequestToStruct("GET", fmt.Sprintf("/xusers/users?startIndex=%d&pageSize=%d", startIndex, pageSize),
-			nil, xUsers); err != nil {
+			nil, &xUsers); err != nil {
 			return
 		}
 		users = append(users, xUsers.VXUsers...)
@@ -228,14 +228,14 @@ func (c *Client) GetUsers() (users []types.VXUser, err error) {
 }
 
 func (c *Client) GetUserById(userId int) (u types.VXUser, err error) {
-	if err = c.RequestToStruct("GET", fmt.Sprintf("/xusers/secure/users/%d", userId), nil, u); err != nil {
+	if err = c.RequestToStruct("GET", fmt.Sprintf("/xusers/secure/users/%d", userId), nil, &u); err != nil {
 		return u, err
 	}
 	return u, nil
 }
 
 func (c *Client) GetUserByName(userName string) (u types.VXUser, err error) {
-	if err = c.RequestToStruct("GET", fmt.Sprintf("/xusers/users/userName/%s", userName), nil, u); err != nil {
+	if err = c.RequestToStruct("GET", fmt.Sprintf("/xusers/users/userName/%s", userName), nil, &u); err != nil {
 		return u, err
 	}
 	return u, nil
@@ -250,7 +250,7 @@ func (c *Client) UpdateUser(input types.VXUser) (output types.VXUser, err error)
 		return
 	}
 
-	if err = c.RequestToStruct("PUT", fmt.Sprintf("/xusers/secure/users/%d", input.Id), reqBody, output); err != nil {
+	if err = c.RequestToStruct("PUT", fmt.Sprintf("/xusers/secure/users/%d", input.Id), reqBody, &output); err != nil {
 		return
 	}
 	return
