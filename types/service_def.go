@@ -1,5 +1,13 @@
-package api
+package types
 
+type PluginsDefinitions struct {
+	StartIndex  int          `json:"startIndex"`
+	PageSize    int          `json:"pageSize"`
+	TotalCount  int          `json:"totalCount"`
+	ResultSize  int          `json:"resultSize"`
+	QueryTimeMS int64        `json:"queryTimeMS"`
+	ServiceDefs []ServiceDef `json:"serviceDefs"`
+}
 type ServiceDef struct {
 	Id          int    `json:"id"`
 	Guid        string `json:"guid"`
