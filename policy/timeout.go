@@ -52,8 +52,8 @@ func validitySchedulesParse(input string) (output string) {
 	return
 }
 
-func (b *Policy) ParseValiditySchedules() (output []string) {
-	for _, vs := range b.ValiditySchedules {
+func (p *Policy) ParseValiditySchedules() (output []string) {
+	for _, vs := range p.ValiditySchedules {
 		startTime := validitySchedulesParse(vs.StartTime)
 		endTime := validitySchedulesParse(vs.EndTime)
 		tmpStr := startTime + "~" + endTime + "~" + vs.TimeZone
@@ -62,8 +62,8 @@ func (b *Policy) ParseValiditySchedules() (output []string) {
 	return
 }
 
-func (b *Policy) JudgeTimeout() (isTimeout bool, err error) {
-	vss := b.ParseValiditySchedules()
+func (p *Policy) JudgeTimeout() (isTimeout bool, err error) {
+	vss := p.ParseValiditySchedules()
 	for _, vs := range vss {
 		timeArr := strings.Split(vs, "~")
 		var location *time.Location

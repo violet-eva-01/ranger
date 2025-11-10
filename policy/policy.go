@@ -30,110 +30,110 @@ type Policy struct {
 	ZoneName             string                        `json:"zoneName,omitnil"`
 }
 
-func (b *Policy) SetEnable(isEnable bool) {
-	b.IsEnabled = isEnable
+func (p *Policy) SetEnable(isEnable bool) {
+	p.IsEnabled = isEnable
 }
 
-func (b *Policy) SetName(name string) {
-	b.Name = name
+func (p *Policy) SetName(name string) {
+	p.Name = name
 }
 
-func (b *Policy) SetPolicyType(policyType int) {
-	b.PolicyType = policyType
+func (p *Policy) SetPolicyType(policyType int) {
+	p.PolicyType = policyType
 }
 
-func (b *Policy) SetPolicyPriority(policyPriority int) {
-	b.PolicyPriority = policyPriority
+func (p *Policy) SetPolicyPriority(policyPriority int) {
+	p.PolicyPriority = policyPriority
 }
 
-func (b *Policy) SetDescription(description string) {
-	b.Description = description
+func (p *Policy) SetDescription(description string) {
+	p.Description = description
 }
 
-func (b *Policy) SetIsAuditEnabled(isAuditEnabled bool) {
-	b.IsAuditEnabled = isAuditEnabled
+func (p *Policy) SetIsAuditEnabled(isAuditEnabled bool) {
+	p.IsAuditEnabled = isAuditEnabled
 }
 
-func (b *Policy) SetResources(resources rtypes.Resources) {
-	b.Resources = resources
+func (p *Policy) SetResources(resources rtypes.Resources) {
+	p.Resources = resources
 }
 
-func (b *Policy) SetPolicyItems(policyItems ...rtypes.Permission) {
-	b.PolicyItems = policyItems
+func (p *Policy) SetPolicyItems(policyItems ...rtypes.Permission) {
+	p.PolicyItems = policyItems
 }
 
-func (b *Policy) AddPolicyItems(policyItems ...rtypes.Permission) {
-	b.PolicyItems = append(b.PolicyItems, policyItems...)
+func (p *Policy) AddPolicyItems(policyItems ...rtypes.Permission) {
+	p.PolicyItems = append(p.PolicyItems, policyItems...)
 }
 
-func (b *Policy) SetAllowExceptions(allowExceptions ...rtypes.Permission) {
-	b.AllowExceptions = allowExceptions
+func (p *Policy) SetAllowExceptions(allowExceptions ...rtypes.Permission) {
+	p.AllowExceptions = allowExceptions
 }
 
-func (b *Policy) AddAllowExceptions(allowExceptions ...rtypes.Permission) {
-	b.AllowExceptions = append(b.AllowExceptions, allowExceptions...)
+func (p *Policy) AddAllowExceptions(allowExceptions ...rtypes.Permission) {
+	p.AllowExceptions = append(p.AllowExceptions, allowExceptions...)
 }
 
-func (b *Policy) SetDenyPolicyItems(denyPolicyItems ...rtypes.Permission) {
-	b.DenyPolicyItems = denyPolicyItems
+func (p *Policy) SetDenyPolicyItems(denyPolicyItems ...rtypes.Permission) {
+	p.DenyPolicyItems = denyPolicyItems
 }
 
-func (b *Policy) AddDenyPolicyItems(policyItems ...rtypes.Permission) {
-	b.DenyPolicyItems = append(b.DenyPolicyItems, policyItems...)
+func (p *Policy) AddDenyPolicyItems(policyItems ...rtypes.Permission) {
+	p.DenyPolicyItems = append(p.DenyPolicyItems, policyItems...)
 }
 
-func (b *Policy) SetIsDenyAllElse(isDenyAllElse bool) {
-	b.IsDenyAllElse = isDenyAllElse
+func (p *Policy) SetIsDenyAllElse(isDenyAllElse bool) {
+	p.IsDenyAllElse = isDenyAllElse
 }
 
-func (b *Policy) SetDenyExceptions(denyExceptions ...rtypes.Permission) {
-	b.DenyExceptions = denyExceptions
+func (p *Policy) SetDenyExceptions(denyExceptions ...rtypes.Permission) {
+	p.DenyExceptions = denyExceptions
 }
 
-func (b *Policy) AddDenyExceptions(denyExceptions ...rtypes.Permission) {
-	b.DenyExceptions = append(b.DenyExceptions, denyExceptions...)
+func (p *Policy) AddDenyExceptions(denyExceptions ...rtypes.Permission) {
+	p.DenyExceptions = append(p.DenyExceptions, denyExceptions...)
 }
 
-func (b *Policy) SetDataMaskPolicyItems(dataMaskPolicyItems ...rtypes.DataMaskPolicyItems) {
-	b.DataMaskPolicyItems = dataMaskPolicyItems
+func (p *Policy) SetDataMaskPolicyItems(dataMaskPolicyItems ...rtypes.DataMaskPolicyItems) {
+	p.DataMaskPolicyItems = dataMaskPolicyItems
 }
 
-func (b *Policy) AddDataMaskPolicyItems(dataMaskPolicyItems ...rtypes.DataMaskPolicyItems) {
-	b.DataMaskPolicyItems = append(b.DataMaskPolicyItems, dataMaskPolicyItems...)
+func (p *Policy) AddDataMaskPolicyItems(dataMaskPolicyItems ...rtypes.DataMaskPolicyItems) {
+	p.DataMaskPolicyItems = append(p.DataMaskPolicyItems, dataMaskPolicyItems...)
 }
 
-func (b *Policy) SetRowFilterPolicyItems(rowFilterPolicyItems ...rtypes.RowFilterPolicyItems) {
-	b.RowFilterPolicyItems = rowFilterPolicyItems
+func (p *Policy) SetRowFilterPolicyItems(rowFilterPolicyItems ...rtypes.RowFilterPolicyItems) {
+	p.RowFilterPolicyItems = rowFilterPolicyItems
 }
 
-func (b *Policy) AddRowFilterPolicyItems(rowFilterPolicyItems ...rtypes.RowFilterPolicyItems) {
-	b.RowFilterPolicyItems = append(b.RowFilterPolicyItems, rowFilterPolicyItems...)
+func (p *Policy) AddRowFilterPolicyItems(rowFilterPolicyItems ...rtypes.RowFilterPolicyItems) {
+	p.RowFilterPolicyItems = append(p.RowFilterPolicyItems, rowFilterPolicyItems...)
 }
 
-func (b *Policy) SetOptions(options rtypes.Options) {
-	b.Options = options
+func (p *Policy) SetOptions(options rtypes.Options) {
+	p.Options = options
 }
 
-func (b *Policy) SetValiditySchedules(validitySchedules ...rtypes.ValiditySchedules) {
-	b.ValiditySchedules = validitySchedules
+func (p *Policy) SetValiditySchedules(validitySchedules ...rtypes.ValiditySchedules) {
+	p.ValiditySchedules = validitySchedules
 }
 
-func (b *Policy) AddValiditySchedules(validitySchedules ...rtypes.ValiditySchedules) {
-	b.ValiditySchedules = append(b.ValiditySchedules, validitySchedules...)
+func (p *Policy) AddValiditySchedules(validitySchedules ...rtypes.ValiditySchedules) {
+	p.ValiditySchedules = append(p.ValiditySchedules, validitySchedules...)
 }
 
-func (b *Policy) SetPolicyLabel(policyLabel ...string) {
-	b.PolicyLabels = policyLabel
+func (p *Policy) SetPolicyLabel(policyLabel ...string) {
+	p.PolicyLabels = policyLabel
 }
 
-func (b *Policy) AddPolicyLabel(policyLabel ...string) {
-	b.PolicyLabels = rtypes.Union(b.PolicyLabels, policyLabel...)
+func (p *Policy) AddPolicyLabel(policyLabel ...string) {
+	p.PolicyLabels = rtypes.Union(p.PolicyLabels, policyLabel...)
 }
 
-func (b *Policy) DelPolicyLabel(policyLabel ...string) {
-	b.PolicyLabels = rtypes.Difference(b.PolicyLabels, policyLabel...)
+func (p *Policy) DelPolicyLabel(policyLabel ...string) {
+	p.PolicyLabels = rtypes.Difference(p.PolicyLabels, policyLabel...)
 }
 
-func (b *Policy) SetZoneName(zoneName string) {
-	b.ZoneName = zoneName
+func (p *Policy) SetZoneName(zoneName string) {
+	p.ZoneName = zoneName
 }

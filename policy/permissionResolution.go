@@ -7,9 +7,9 @@ import (
 	rtypes "github.com/violet-eva-01/ranger/types"
 )
 
-func (b *Policy) GetPermissionResolution(filters ...func([]rtypes.PermissionResolution) []rtypes.PermissionResolution) ([]rtypes.PermissionResolution, error) {
-	b.ParseValiditySchedules()
-	parse, err := b.getPermissionResolution()
+func (p *Policy) GetPermissionResolution(filters ...func([]rtypes.PermissionResolution) []rtypes.PermissionResolution) ([]rtypes.PermissionResolution, error) {
+	p.ParseValiditySchedules()
+	parse, err := p.getPermissionResolution()
 	if err != nil {
 		return nil, err
 	}
@@ -19,17 +19,17 @@ func (b *Policy) GetPermissionResolution(filters ...func([]rtypes.PermissionReso
 	return parse, nil
 }
 
-func (b *Policy) getPermissionResolution() ([]rtypes.PermissionResolution, error) {
+func (p *Policy) getPermissionResolution() ([]rtypes.PermissionResolution, error) {
 	var (
 		pr        []rtypes.PermissionResolution
 		vss       []string
 		isTimeout bool
 	)
 
-	objects := b.getObject()
-	if len(b.ValiditySchedules) > 0 {
-		vss = b.ParseValiditySchedules()
-		timeout, err := b.JudgeTimeout()
+	objects := p.getObject()
+	if len(p.ValiditySchedules) > 0 {
+		vss = p.ParseValiditySchedules()
+		timeout, err := p.JudgeTimeout()
 		if err != nil {
 			return nil, err
 		}
@@ -43,56 +43,56 @@ func (b *Policy) getPermissionResolution() ([]rtypes.PermissionResolution, error
 		return
 	}
 
-	if len(b.RowFilterPolicyItems) > 0 {
-		for _, rf := range b.RowFilterPolicyItems {
+	if len(p.RowFilterPolicyItems) > 0 {
+		for _, rf := range p.RowFilterPolicyItems {
 			permissions := getPermissions(rf.Accesses)
 			restriction := rf.RowFilterInfo.FilterExpr
-			tmpPR := b.getPRs(objects, rf.Users, rf.Roles, rf.Groups, permissions, "", vss, isTimeout, restriction)
+			tmpPR := p.getPRs(objects, rf.Users, rf.Roles, rf.Groups, permissions, "", vss, isTimeout, restriction)
 			pr = append(pr, tmpPR...)
 		}
 	}
 
-	if len(b.DataMaskPolicyItems) > 0 {
-		for _, dmp := range b.DataMaskPolicyItems {
+	if len(p.DataMaskPolicyItems) > 0 {
+		for _, dmp := range p.DataMaskPolicyItems {
 			permissions := getPermissions(dmp.Accesses)
 			restriction := dmp.DataMaskInfo.DataMaskType
-			tmpPR := b.getPRs(objects, dmp.Users, dmp.Roles, dmp.Groups, permissions, "", vss, isTimeout, restriction)
+			tmpPR := p.getPRs(objects, dmp.Users, dmp.Roles, dmp.Groups, permissions, "", vss, isTimeout, restriction)
 			pr = append(pr, tmpPR...)
 		}
 	}
 
-	if len(b.PolicyItems) > 0 {
+	if len(p.PolicyItems) > 0 {
 		permissionType := "PolicyItem"
-		for _, pi := range b.PolicyItems {
+		for _, pi := range p.PolicyItems {
 			permissions := getPermissions(pi.Accesses)
-			tmpPR := b.getPRs(objects, pi.Users, pi.Roles, pi.Groups, permissions, permissionType, vss, isTimeout)
+			tmpPR := p.getPRs(objects, pi.Users, pi.Roles, pi.Groups, permissions, permissionType, vss, isTimeout)
 			pr = append(pr, tmpPR...)
 		}
 	}
 
-	if len(b.DenyPolicyItems) > 0 {
+	if len(p.DenyPolicyItems) > 0 {
 		permissionType := "DenyPolicyItem"
-		for _, dpi := range b.DenyPolicyItems {
+		for _, dpi := range p.DenyPolicyItems {
 			permissions := getPermissions(dpi.Accesses)
-			tmpPR := b.getPRs(objects, dpi.Users, dpi.Roles, dpi.Groups, permissions, permissionType, vss, isTimeout)
+			tmpPR := p.getPRs(objects, dpi.Users, dpi.Roles, dpi.Groups, permissions, permissionType, vss, isTimeout)
 			pr = append(pr, tmpPR...)
 		}
 	}
 
-	if len(b.AllowExceptions) > 0 {
+	if len(p.AllowExceptions) > 0 {
 		permissionType := "AllowException"
-		for _, ae := range b.AllowExceptions {
+		for _, ae := range p.AllowExceptions {
 			permissions := getPermissions(ae.Accesses)
-			tmpPR := b.getPRs(objects, ae.Users, ae.Roles, ae.Groups, permissions, permissionType, vss, isTimeout)
+			tmpPR := p.getPRs(objects, ae.Users, ae.Roles, ae.Groups, permissions, permissionType, vss, isTimeout)
 			pr = append(pr, tmpPR...)
 		}
 	}
 
-	if len(b.DenyExceptions) > 0 {
+	if len(p.DenyExceptions) > 0 {
 		permissionType := "DenyException"
-		for _, de := range b.DenyExceptions {
+		for _, de := range p.DenyExceptions {
 			permissions := getPermissions(de.Accesses)
-			tmpPR := b.getPRs(objects, de.Users, de.Roles, de.Groups, permissions, permissionType, vss, isTimeout)
+			tmpPR := p.getPRs(objects, de.Users, de.Roles, de.Groups, permissions, permissionType, vss, isTimeout)
 			pr = append(pr, tmpPR...)
 		}
 	}
@@ -100,24 +100,24 @@ func (b *Policy) getPermissionResolution() ([]rtypes.PermissionResolution, error
 	return pr, nil
 }
 
-func (b *Policy) getPRs(ojs []rtypes.Object, users []string, roles []string, groups []string, permissions []string, permissionType string, vss []string, isTimeout bool, restrictions ...string) (output []rtypes.PermissionResolution) {
+func (p *Policy) getPRs(ojs []rtypes.Object, users []string, roles []string, groups []string, permissions []string, permissionType string, vss []string, isTimeout bool, restrictions ...string) (output []rtypes.PermissionResolution) {
 
 	for _, oj := range ojs {
 		if len(users) > 1 || (len(users) == 1 && strings.TrimSpace(users[0]) != "") {
 			for _, user := range users {
-				tmpPR := b.getPR(oj, permissions, permissionType, user, "USER", vss, isTimeout, restrictions...)
+				tmpPR := p.getPR(oj, permissions, permissionType, user, "USER", vss, isTimeout, restrictions...)
 				output = append(output, tmpPR)
 			}
 		}
 		if len(groups) > 1 || (len(groups) == 1 && strings.TrimSpace(groups[0]) != "") {
 			for _, group := range groups {
-				tmpPR := b.getPR(oj, permissions, permissionType, group, "GROUP", vss, isTimeout, restrictions...)
+				tmpPR := p.getPR(oj, permissions, permissionType, group, "GROUP", vss, isTimeout, restrictions...)
 				output = append(output, tmpPR)
 			}
 		}
 		if len(roles) > 1 || (len(roles) == 1 && strings.TrimSpace(roles[0]) != "") {
 			for _, role := range roles {
-				tmpPR := b.getPR(oj, permissions, permissionType, role, "ROLE", vss, isTimeout, restrictions...)
+				tmpPR := p.getPR(oj, permissions, permissionType, role, "ROLE", vss, isTimeout, restrictions...)
 				output = append(output, tmpPR)
 			}
 		}
@@ -125,10 +125,10 @@ func (b *Policy) getPRs(ojs []rtypes.Object, users []string, roles []string, gro
 	return
 }
 
-func (b *Policy) getPR(oj rtypes.Object, permissions []string, permissionType string, grantee string, GranteeType string, vss []string, isTimeout bool, restrictions ...string) rtypes.PermissionResolution {
+func (p *Policy) getPR(oj rtypes.Object, permissions []string, permissionType string, grantee string, GranteeType string, vss []string, isTimeout bool, restrictions ...string) rtypes.PermissionResolution {
 	var pr rtypes.PermissionResolution
-	pr.PolicyId = b.Id
-	pr.PolicyName = b.Name
+	pr.PolicyId = p.Id
+	pr.PolicyName = p.Name
 	pr.PermissionType = permissionType
 	pr.Permission = permissions
 	pr.ObjectType = oj.ObjectType
@@ -139,10 +139,10 @@ func (b *Policy) getPR(oj rtypes.Object, permissions []string, permissionType st
 	pr.ObjectRestriction = restrictions
 	pr.GranteeType = GranteeType
 	pr.Grantee = strings.TrimSpace(grantee)
-	pr.IsEnable = b.IsEnabled
-	pr.IsOverride = b.PolicyPriority != 0
+	pr.IsEnable = p.IsEnabled
+	pr.IsOverride = p.PolicyPriority != 0
 	pr.ValiditySchedules = vss
-	if !pr.IsEnable || isTimeout || (len(b.AllowExceptions) > 0 && len(b.PolicyItems) <= 0 && permissionType == "AllowException") || (len(b.DenyExceptions) > 0 && len(b.DenyPolicyItems) <= 0 && permissionType == "DenyException") {
+	if !pr.IsEnable || isTimeout || (len(p.AllowExceptions) > 0 && len(p.PolicyItems) <= 0 && permissionType == "AllowException") || (len(p.DenyExceptions) > 0 && len(p.DenyPolicyItems) <= 0 && permissionType == "DenyException") {
 		pr.Status = false
 	} else {
 		pr.Status = true
@@ -150,13 +150,13 @@ func (b *Policy) getPR(oj rtypes.Object, permissions []string, permissionType st
 	return pr
 }
 
-func (b *Policy) getObject() (output []rtypes.Object) {
+func (p *Policy) getObject() (output []rtypes.Object) {
 
-	objectType := b.getObjectType()
+	objectType := p.getObjectType()
 
 	switch objectType {
 	case rtypes.HiveService:
-		for _, hiveService := range b.Resources.HiveService.Values {
+		for _, hiveService := range p.Resources.HiveService.Values {
 			if hiveService == "*" {
 				hiveService = "ALL HIVE SERVICE"
 			}
@@ -166,7 +166,7 @@ func (b *Policy) getObject() (output []rtypes.Object) {
 			output = append(output, tmpObject)
 		}
 	case rtypes.GlobalUdf:
-		for _, gu := range b.Resources.Global.Values {
+		for _, gu := range p.Resources.Global.Values {
 			if gu == "*" {
 				gu = "ALL GLOBAL UDF"
 			}
@@ -176,7 +176,7 @@ func (b *Policy) getObject() (output []rtypes.Object) {
 			output = append(output, tmpObject)
 		}
 	case rtypes.Url:
-		for _, url := range b.Resources.Url.Values {
+		for _, url := range p.Resources.Url.Values {
 			if url == "*" {
 				url = "ALL URL"
 			}
@@ -186,7 +186,7 @@ func (b *Policy) getObject() (output []rtypes.Object) {
 			output = append(output, tmpObject)
 		}
 	case rtypes.Database:
-		for _, db := range b.Resources.Database.Values {
+		for _, db := range p.Resources.Database.Values {
 			if db == "*" {
 				db = "ALL DATABASE"
 			}
@@ -196,7 +196,7 @@ func (b *Policy) getObject() (output []rtypes.Object) {
 			output = append(output, tmpObject)
 		}
 	case rtypes.Hdfs:
-		for _, path := range b.Resources.Path.Values {
+		for _, path := range p.Resources.Path.Values {
 			if path == "*" {
 				path = "ALL PATH"
 			}
@@ -206,7 +206,7 @@ func (b *Policy) getObject() (output []rtypes.Object) {
 			output = append(output, tmpObject)
 		}
 	case rtypes.Yarn:
-		for _, query := range b.Resources.Queue.Values {
+		for _, query := range p.Resources.Queue.Values {
 			if query == "*" {
 				query = "ALL QUEUE"
 			}
@@ -217,20 +217,20 @@ func (b *Policy) getObject() (output []rtypes.Object) {
 	// 为*规则不生效，不做特殊处理
 	case rtypes.Masking, rtypes.RowFilter:
 		var tmpObject rtypes.Object
-		tmpObject.ObjectDBName = b.Resources.Database.Values[0]
-		tmpObject.ObjectTBLName = b.Resources.Table.Values[0]
+		tmpObject.ObjectDBName = p.Resources.Database.Values[0]
+		tmpObject.ObjectTBLName = p.Resources.Table.Values[0]
 		tmpObject.ObjectType = rtypes.RowFilter.String()
 		if objectType == rtypes.Masking {
-			tmpObject.ObjectColumnName = b.Resources.Column.Values
+			tmpObject.ObjectColumnName = p.Resources.Column.Values
 			tmpObject.ObjectType = rtypes.Masking.String()
 		}
 		output = append(output, tmpObject)
 	case rtypes.Chdfs:
-		for _, mountPoint := range b.Resources.MountPoint.Values {
+		for _, mountPoint := range p.Resources.MountPoint.Values {
 			if mountPoint == "*" {
 				mountPoint = "ALL MOUNT POINT"
 			}
-			for _, path := range b.Resources.Path.Values {
+			for _, path := range p.Resources.Path.Values {
 				if path == "*" {
 					path = "ALL PATH"
 				}
@@ -241,11 +241,11 @@ func (b *Policy) getObject() (output []rtypes.Object) {
 			}
 		}
 	case rtypes.Cos:
-		for _, bucket := range b.Resources.Bucket.Values {
+		for _, bucket := range p.Resources.Bucket.Values {
 			if bucket == "*" {
 				bucket = "ALL BUCKET"
 			}
-			for _, path := range b.Resources.Path.Values {
+			for _, path := range p.Resources.Path.Values {
 				if path == "*" {
 					path = "ALL PATH"
 				}
@@ -256,11 +256,11 @@ func (b *Policy) getObject() (output []rtypes.Object) {
 			}
 		}
 	case rtypes.Table, rtypes.Column:
-		for _, database := range b.Resources.Database.Values {
+		for _, database := range p.Resources.Database.Values {
 			if database == "*" {
 				database = "ALL DATABASE"
 			}
-			for _, table := range b.Resources.Table.Values {
+			for _, table := range p.Resources.Table.Values {
 				if table == "*" {
 					table = "ALL TABLE"
 				}
@@ -269,7 +269,7 @@ func (b *Policy) getObject() (output []rtypes.Object) {
 				tmpObject.ObjectTBLName = table
 				tmpObject.ObjectType = rtypes.Table.String()
 				if objectType == rtypes.Column {
-					tmpObject.ObjectColumnName = b.Resources.Column.Values
+					tmpObject.ObjectColumnName = p.Resources.Column.Values
 					tmpObject.ObjectType = rtypes.Column.String()
 				}
 
@@ -282,33 +282,33 @@ func (b *Policy) getObject() (output []rtypes.Object) {
 	return
 }
 
-func (b *Policy) getObjectType() rtypes.ObjectType {
+func (p *Policy) getObjectType() rtypes.ObjectType {
 
-	switch b.ServiceType {
+	switch p.ServiceType {
 	case "hive":
-		if len(b.DataMaskPolicyItems) > 0 {
+		if len(p.DataMaskPolicyItems) > 0 {
 			return rtypes.Masking
-		} else if len(b.RowFilterPolicyItems) > 0 {
+		} else if len(p.RowFilterPolicyItems) > 0 {
 			return rtypes.RowFilter
-		} else if b.Resources.HiveService != nil && len(b.Resources.HiveService.Values) > 0 {
+		} else if p.Resources.HiveService != nil && len(p.Resources.HiveService.Values) > 0 {
 			return rtypes.HiveService
-		} else if b.Resources.Url != nil && len(b.Resources.Url.Values) > 0 {
+		} else if p.Resources.Url != nil && len(p.Resources.Url.Values) > 0 {
 			return rtypes.Url
-		} else if b.Resources.Udf != nil && len(b.Resources.Udf.Values) > 0 {
-			if b.Resources.Database != nil && len(b.Resources.Database.Values) > 1 {
+		} else if p.Resources.Udf != nil && len(p.Resources.Udf.Values) > 0 {
+			if p.Resources.Database != nil && len(p.Resources.Database.Values) > 1 {
 				return rtypes.Udf
 			} else {
 				return rtypes.GlobalUdf
 			}
-		} else if b.Resources.Column != nil && len(b.Resources.Column.Values) > 0 {
+		} else if p.Resources.Column != nil && len(p.Resources.Column.Values) > 0 {
 			return rtypes.Column
-		} else if b.Resources.Table != nil && len(b.Resources.Table.Values) > 0 {
+		} else if p.Resources.Table != nil && len(p.Resources.Table.Values) > 0 {
 			return rtypes.Table
 		} else {
 			return rtypes.Database
 		}
 	default:
-		objectType := rtypes.GetObjectType(b.ServiceType)
+		objectType := rtypes.GetObjectType(p.ServiceType)
 		return objectType
 	}
 }
