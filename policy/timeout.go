@@ -64,7 +64,6 @@ func (b *Policy) ParseValiditySchedules() (output []string) {
 
 func (b *Policy) JudgeTimeout() (isTimeout bool, err error) {
 	vss := b.ParseValiditySchedules()
-
 	for _, vs := range vss {
 		timeArr := strings.Split(vs, "~")
 		var location *time.Location

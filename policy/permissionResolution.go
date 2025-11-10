@@ -279,7 +279,6 @@ func (b *Policy) getObject() (output []rtypes.Object) {
 	default:
 		panic("unhandled default case")
 	}
-
 	return
 }
 
@@ -291,19 +290,19 @@ func (b *Policy) getObjectType() rtypes.ObjectType {
 			return rtypes.Masking
 		} else if len(b.RowFilterPolicyItems) > 0 {
 			return rtypes.RowFilter
-		} else if len(b.Resources.HiveService.Values) > 0 {
+		} else if b.Resources.HiveService != nil && len(b.Resources.HiveService.Values) > 0 {
 			return rtypes.HiveService
-		} else if len(b.Resources.Url.Values) > 0 {
+		} else if b.Resources.Url != nil && len(b.Resources.Url.Values) > 0 {
 			return rtypes.Url
-		} else if len(b.Resources.Udf.Values) > 0 {
-			if len(b.Resources.Database.Values) > 1 {
+		} else if b.Resources.Udf != nil && len(b.Resources.Udf.Values) > 0 {
+			if b.Resources.Database != nil && len(b.Resources.Database.Values) > 1 {
 				return rtypes.Udf
 			} else {
 				return rtypes.GlobalUdf
 			}
-		} else if len(b.Resources.Column.Values) > 0 {
+		} else if b.Resources.Column != nil && len(b.Resources.Column.Values) > 0 {
 			return rtypes.Column
-		} else if len(b.Resources.Table.Values) > 0 {
+		} else if b.Resources.Table != nil && len(b.Resources.Table.Values) > 0 {
 			return rtypes.Table
 		} else {
 			return rtypes.Database

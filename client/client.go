@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"github.com/violet-eva-01/ranger/types"
 	"io"
 	"net/http"
 	"net/url"
@@ -13,6 +12,7 @@ import (
 	"strings"
 
 	"github.com/violet-eva-01/ranger/policy"
+	"github.com/violet-eva-01/ranger/types"
 )
 
 type Client struct {

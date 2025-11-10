@@ -26,7 +26,7 @@ func (r *Resource) SetValues(values ...string) {
 }
 
 func (r *Resource) AddValues(values ...string) {
-	r.Values = Union(append(r.Values, values...))
+	r.Values = Union(r.Values, values...)
 }
 
 func (r *Resource) DelValues(values ...string) {
