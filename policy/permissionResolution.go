@@ -166,7 +166,7 @@ func (p *Policy) getObject() (output []rtypes.Object) {
 			output = append(output, tmpObject)
 		}
 	case rtypes.Udf:
-		for _, gu := range p.Resources.Global.Values {
+		for _, gu := range p.Resources.Udf.Values {
 			if gu == "*" {
 				gu = "ALL DATABASE UDF"
 			}
