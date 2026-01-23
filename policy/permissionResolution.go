@@ -277,7 +277,7 @@ func (p *Policy) getObject() (output []rtypes.Object) {
 			}
 		}
 	default:
-		panic("unhandled default case")
+		panic(p.ServiceType + " is not supported")
 	}
 	return
 }
