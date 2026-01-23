@@ -162,7 +162,17 @@ func (p *Policy) getObject() (output []rtypes.Object) {
 			}
 			var tmpObject rtypes.Object
 			tmpObject.ObjectName = hiveService
-			tmpObject.ObjectType = rtypes.HiveService.String()
+			tmpObject.ObjectType = objectType.String()
+			output = append(output, tmpObject)
+		}
+	case rtypes.Udf:
+		for _, gu := range p.Resources.Global.Values {
+			if gu == "*" {
+				gu = "ALL DATABASE UDF"
+			}
+			var tmpObject rtypes.Object
+			tmpObject.ObjectName = gu
+			tmpObject.ObjectType = objectType.String()
 			output = append(output, tmpObject)
 		}
 	case rtypes.GlobalUdf:
@@ -172,7 +182,7 @@ func (p *Policy) getObject() (output []rtypes.Object) {
 			}
 			var tmpObject rtypes.Object
 			tmpObject.ObjectName = gu
-			tmpObject.ObjectType = rtypes.GlobalUdf.String()
+			tmpObject.ObjectType = objectType.String()
 			output = append(output, tmpObject)
 		}
 	case rtypes.Url:
@@ -182,7 +192,7 @@ func (p *Policy) getObject() (output []rtypes.Object) {
 			}
 			var tmpObject rtypes.Object
 			tmpObject.ObjectName = url
-			tmpObject.ObjectType = rtypes.Url.String()
+			tmpObject.ObjectType = objectType.String()
 			output = append(output, tmpObject)
 		}
 	case rtypes.Database:
@@ -192,7 +202,7 @@ func (p *Policy) getObject() (output []rtypes.Object) {
 			}
 			var tmpObject rtypes.Object
 			tmpObject.ObjectDBName = db
-			tmpObject.ObjectType = rtypes.Database.String()
+			tmpObject.ObjectType = objectType.String()
 			output = append(output, tmpObject)
 		}
 	case rtypes.Hdfs:
@@ -202,7 +212,7 @@ func (p *Policy) getObject() (output []rtypes.Object) {
 			}
 			var tmpObject rtypes.Object
 			tmpObject.ObjectName = path
-			tmpObject.ObjectType = rtypes.Hdfs.String()
+			tmpObject.ObjectType = objectType.String()
 			output = append(output, tmpObject)
 		}
 	case rtypes.Yarn:
@@ -212,7 +222,8 @@ func (p *Policy) getObject() (output []rtypes.Object) {
 			}
 			var tmpObject rtypes.Object
 			tmpObject.ObjectName = query
-			tmpObject.ObjectType = rtypes.Yarn.String()
+			tmpObject.ObjectType = objectType.String()
+			output = append(output, tmpObject)
 		}
 	// 为*规则不生效，不做特殊处理
 	case rtypes.Masking, rtypes.RowFilter:
@@ -283,7 +294,6 @@ func (p *Policy) getObject() (output []rtypes.Object) {
 }
 
 func (p *Policy) getObjectType() rtypes.ObjectType {
-
 	switch p.ServiceType {
 	case "hive":
 		if len(p.DataMaskPolicyItems) > 0 {
