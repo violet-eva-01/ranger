@@ -294,12 +294,10 @@ func (p *Policy) getObjectType() rtypes.ObjectType {
 			return rtypes.HiveService
 		} else if p.Resources.Url != nil && len(p.Resources.Url.Values) > 0 {
 			return rtypes.Url
+		} else if p.Resources.Global != nil && len(p.Resources.Global.Values) > 0 {
+			return rtypes.GlobalUdf
 		} else if p.Resources.Udf != nil && len(p.Resources.Udf.Values) > 0 {
-			if p.Resources.Database != nil && len(p.Resources.Database.Values) > 1 {
-				return rtypes.Udf
-			} else {
-				return rtypes.GlobalUdf
-			}
+			return rtypes.Udf
 		} else if p.Resources.Column != nil && len(p.Resources.Column.Values) > 0 {
 			return rtypes.Column
 		} else if p.Resources.Table != nil && len(p.Resources.Table.Values) > 0 {

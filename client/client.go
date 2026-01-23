@@ -154,9 +154,10 @@ func (c *Client) GetServiceDefs() ([]types.ServiceDef, error) {
 			return nil, err
 		}
 		sd = append(sd, pd.ServiceDefs...)
-		startIndex += pageSize
 		if pd.ResultSize == 0 || (pd.ResultSize > 0 && pd.ResultSize < pd.PageSize) {
 			break
+		} else {
+			startIndex += pageSize
 		}
 	}
 	return sd, nil
@@ -178,6 +179,8 @@ func (c *Client) GetPolicyByServiceType(serviceType string) ([]policy.Policy, er
 		pb = append(pb, tmpPb...)
 		if len(tmpPb) == 0 || len(tmpPb) < pageSize {
 			break
+		} else {
+			startIndex += pageSize
 		}
 	}
 
@@ -226,9 +229,10 @@ func (c *Client) GetUsers() (users []types.VXUser, err error) {
 			return
 		}
 		users = append(users, xUsers.VXUsers...)
-		startIndex += pageSize
 		if xUsers.ResultSize == 0 || (xUsers.ResultSize > 0 && xUsers.ResultSize < xUsers.PageSize) {
 			break
+		} else {
+			startIndex += pageSize
 		}
 	}
 
