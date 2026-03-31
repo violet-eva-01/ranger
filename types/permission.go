@@ -54,8 +54,11 @@ func (p *Permission) SetConditions(conditions ...Conditions) {
 func (p *Permission) AddConditions(conditions ...Conditions) {
 	p.Conditions = append(p.Conditions, conditions...)
 }
-func (p *Permission) SetDelegateAdmin(delegateAdmin bool) {
-	p.DelegateAdmin = delegateAdmin
+func (p *Permission) EnableDelegateAdmin() {
+	p.DelegateAdmin = true
+}
+func (p *Permission) DisableDelegateAdmin() {
+	p.DelegateAdmin = false
 }
 
 // Accesses

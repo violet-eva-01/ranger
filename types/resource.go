@@ -15,6 +15,84 @@ type Resources struct {
 	KeyName     *Resource `json:"keyname,omitempty,omitnil"` // kms service 相关
 }
 
+func NewDatabaseResources() Resources {
+	return Resources{
+		Database: new(Resource),
+	}
+}
+
+func NewTableResources() Resources {
+	return Resources{
+		Database: new(Resource),
+		Table:    new(Resource),
+	}
+}
+
+func NewColumnResources() Resources {
+	return Resources{
+		Database: new(Resource),
+		Table:    new(Resource),
+		Column:   new(Resource),
+	}
+}
+
+func NewGlobalResources() Resources {
+	return Resources{
+		Global: new(Resource),
+	}
+}
+
+func NewHiveServiceResources() Resources {
+	return Resources{
+		HiveService: new(Resource),
+	}
+}
+
+func NewUdfResources() Resources {
+	return Resources{
+		Database: new(Resource),
+		Udf:      new(Resource),
+	}
+}
+
+func NewUrlResources() Resources {
+	return Resources{
+		Url: new(Resource),
+	}
+}
+
+func NewQueueResources() Resources {
+	return Resources{
+		Queue: new(Resource),
+	}
+}
+
+func NewCosResources() Resources {
+	return Resources{
+		Bucket: new(Resource),
+		Path:   new(Resource),
+	}
+}
+
+func NewCHDFSResources() Resources {
+	return Resources{
+		MountPoint: new(Resource),
+		Path:       new(Resource),
+	}
+}
+
+func NewKeyResources() Resources {
+	return Resources{
+		KeyName: new(Resource),
+	}
+}
+
+func NewPathResources() Resources {
+	return Resources{
+		Path: new(Resource),
+	}
+}
+
 type Resource struct {
 	Values      []string `json:"values,omitnil"`
 	IsExcludes  bool     `json:"isExcludes,omitnil"`

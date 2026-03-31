@@ -69,8 +69,11 @@ func (u *VXUser) AddGroupNameList(groupNameList ...string) {
 func (u *VXUser) DelGroupNameList(groupNameList ...string) {
 	u.GroupNameList = Difference(u.GroupNameList, groupNameList...)
 }
-func (u *VXUser) SetStatus(isEnable int) {
-	u.Status = isEnable
+func (u *VXUser) Enable() {
+	u.Status = 0
+}
+func (u *VXUser) Disable() {
+	u.Status = 1
 }
 func (u *VXUser) SetIsVisible(isVisible int) {
 	u.IsVisible = isVisible
