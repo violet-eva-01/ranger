@@ -10,7 +10,7 @@ import (
 
 func (c *Client) CreatePolicy(input policy.Policy) (output policy.Policy, err error) {
 	var reqBody []byte
-	if reqBody, err = json.Marshal(input); err == nil {
+	if reqBody, err = json.Marshal(input); err != nil {
 		return
 	}
 	err = c.RequestToStruct("POST", "/public/v2/api/policy", reqBody, output)
