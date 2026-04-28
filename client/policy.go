@@ -38,6 +38,48 @@ func (c *Client) GetPolicyByServiceType(serviceType string) (output []policy.Pol
 	return
 }
 
+func (c *Client) GetPolicyByType(serviceType string, policyType int) (output []policy.Policy, err error) {
+	var (
+		startIndex = 0
+		pageSize   = 1000
+	)
+	for {
+		var tmpPb []policy.Policy
+		if err = c.RequestToStruct("GET", fmt.Sprintf("/public/v2/api/policy?startIndex=%d&pageSize=%d&serviceType=%s&policyType=%d", startIndex, pageSize, serviceType, policyType),
+			nil, &tmpPb); err != nil {
+			return nil, err
+		}
+		output = append(output, tmpPb...)
+		if len(tmpPb) == 0 || len(tmpPb) < pageSize {
+			break
+		} else {
+			startIndex += pageSize
+		}
+	}
+	return
+}
+
+func (c *Client) GetHiveAccessPolicy() (output []policy.Policy, err error) {
+	if output, err = c.GetPolicyByType("hive", 0); err != nil {
+		return
+	}
+	return
+}
+
+func (c *Client) GetHiveMaskPolicy() (output []policy.Policy, err error) {
+	if output, err = c.GetPolicyByType("hive", 1); err != nil {
+		return
+	}
+	return
+}
+
+func (c *Client) GetHiveFilterPolicy() (output []policy.Policy, err error) {
+	if output, err = c.GetPolicyByType("hive", 2); err != nil {
+		return
+	}
+	return
+}
+
 func (c *Client) GetPolicyById(policyId int) (output policy.Policy, err error) {
 	if err = c.RequestToStruct("GET", fmt.Sprintf("/public/v2/api/policy/%d", policyId), nil, &output); err != nil {
 		return
